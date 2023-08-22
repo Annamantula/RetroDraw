@@ -9,7 +9,16 @@ import React from 'react';
  * - isActive, which will be set only on cells in the Palette
  * - handleClick, which will be a function to run when the cell has been clicked on 
  */
-const Cell = (props) => {
+const Cell = ({color, isActive, handleClick}) => {
+
+  const cellStyle = {
+    backgroundcolor: color,
+    border: isActive? '3px solid black': '3px solid black'
+  };
+  const cellClassName = isActive?"cell active": "cell"
+  return <div className = {cellClassName} style={cellStyle} onClick = {handleClick}></div>
+  
+ 
   /* Create constants for color, isActive, and handleClick, reading the value off of props */
 
   /**
@@ -21,7 +30,7 @@ const Cell = (props) => {
    * - set the onClick property to be equal to the handleClick function
    *    passed in with the props
    */
-  return <div className="cell"></div>
+
 }
 
 export default Cell;

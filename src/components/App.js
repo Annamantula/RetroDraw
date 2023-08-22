@@ -1,21 +1,9 @@
-import React, { useState } from 'react';
-
-/**
- * The main application uses these four components
- */
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Palette from './Palette';
 import Grid from './Grid';
 import ActionPanel from './ActionPanel';
-
-/**
- * We need access to COLORS and buildCellList for our initial
- * state objects
- */
-import {
-  COLORS,
-  buildCellList
-} from '../utils';
+import {COLORS,buildCellList} from '../utils.js'
 
 /**
  * The App component represents our entire application. It contains all of the
@@ -23,23 +11,56 @@ import {
  * with each other via state objects, and state functions.
  */
 const App = () => {
-  /**
-   * Using useState you need to create:
-   * 
-   * - activeColor, setActiveColor initialized to COLORS[0]
-   * - cellList, setCellList initialized to buildCellList()
-   */
+  [acrtiveColor,setActiveColor]= useState(COLORS[0])
+  [cellList, setCellList] = useState(getCellListFromLocal())
 
-  return <div className="app">
+  const getCellListFromLocal = () => {
+    let cellList = JSON.parse(localStorage.getItem('cellList'));
+
+    if (cellList) {
+      return cellList;
+    }
+
+    return buildCellList();
+  };
+
+  const setCellListOnLocal = (cellList) => {
+    localStorage.setItem('cellList', JSON.stringify(cellList));
+  };
+  const setCellList = (newCellList) => {
+    setCellListOnLocal(newCellList);
+    _setCellList(newCellList);
+  };
+
+  const _setCellList = (newCellList) => {
+    setCellList(newCellList);
+  };
+
+  useEffect(() => {
+    _setCellList(getCellListFromLocal());
+  }, []);
+
+  useEffect (()=>{
+    localStorage.setItem('cellList', JSON.stringify(cellList));
+  },[cellList]);
+  
+
     {/* Header needs no props */}
-    <Header />
     {/* Palette needs to be passed activeColor and setActiveColor */}
-    <Palette />
     {/* Grid needs to be passed activeColor, cellList, and setCellList */}
-    <Grid />
     {/* ActionPanel needs to be passed activeColor, cellList, and setCellList */}
-    <ActionPanel />
+
+return (
+  <div className="app">
+    <Header />
+    <Palette activeColor={activeColor} setActiveColor={setActiveColor} />
+    <Grid activeColor={activeColor} cellList={cellList} setCellList={setCellList}/>
+     <ActionPanel  activeColor = {activeColor} cellList ={cellList} setCellList = {setImmediateCellList}/>
   </div>
-}
+);
+};
 
 export default App;
+
+
+
